@@ -25,6 +25,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+application.properties
 
 ### NetBeans ###
 /nbproject/private/
@@ -37,4 +38,4 @@ out/
 .vscode/
 
 ### 보안정보 ###
-application.properties
+*.properties
