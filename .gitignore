@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### 보안정보 ###
-*.properties
+!**/src/main/resources/application.properties/
