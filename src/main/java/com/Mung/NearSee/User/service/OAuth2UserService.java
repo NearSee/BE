@@ -24,20 +24,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        // Role generate
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN");
 
-        // nameAttributeKey
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName();
 
-        // DB 저장로직이 필요하면 추가
+        // DB 저장로직은 여기다가 나중에 추가!
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
         for(Map.Entry<String, Object> entry: attributes.entrySet()){
-            logger.info(entry.getKey());
+            logger.info("Userinfo {}", entry.getValue());
         }
 
         return new DefaultOAuth2User(authorities, oAuth2User.getAttributes(), userNameAttributeName);
