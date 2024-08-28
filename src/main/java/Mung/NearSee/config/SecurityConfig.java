@@ -1,50 +1,43 @@
 package Mung.NearSee.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
+
 import org.springframework.security.web.SecurityFilterChain;
+
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf().disable()
-                .httpBasic().disable()
-                .formLogin().disable()
-                .headers()
-                .frameOptions()
-                .sameOrigin()
-                .and()
-                .cors() // CORS에러 방지
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/kakao/login").permitAll()  // 이 경로를 인증 없이 접근 가능하도록 설정
+                        .anyRequest().authenticated()
+                )
+                .oauth2Login();  // OAuth2 로그인 설정
 
-                // 세션사용안함
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        return http.build();
 
-                // 접근권한 설정
-                .and().authorizeHttpRequests()
-                .requestMatchers(HttpMethod.OPTIONS).permitAll() // CORS Preflight 방지
-                .requestMatchers("/", "/h2-console/**", "/member/login/**").permitAll()
-                .anyRequest().authenticated();
-
-//                // JWT토큰관련예외처리 -> 나중에
-//                .and()
-//                .exceptionHandling()
-//                .authenticationEntryPoint()
-//                .accessDeniedHandler()
-//                .and()
-//                .addFilterBefore(new (), UsernamePasswordAuthenticationFilter.class);
-        return httpSecurity.build();
     }
+
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedOrigins("http://localhost:8000") // 프론트엔드 도메인
+//                        .allowedMethods("*")
+//                        .allowedHeaders("*");
+//            }
+//        };
+//    }
 }
 
