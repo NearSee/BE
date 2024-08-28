@@ -4,6 +4,7 @@ import Mung.NearSee.config.KakaoOAuth2Properties;
 
 
 import Mung.NearSee.kakao.dto.KakaoUserInfo;
+import Mung.NearSee.kakao.dto.OAuthSignInResponse;
 import Mung.NearSee.kakao.token.OAuthToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,8 +71,26 @@ public class KakaoAuthService {
                 .bodyToMono(KakaoUserInfo.class)
                 .block();
 
-        logger.info("카카오 시용자정보 {}", userInfo);
-
         return userInfo;
+    }
+
+    public OAuthSignInResponse login(String code) {
+        OAuthToken token = getToken(code);
+        KakaoUserInfo userInfo = getUserInfo(token.getAccessToken());
+
+        Long id = userInfo.getId();
+        String nickname = userInfo.getKakao_account().getProfile().getNickname();
+        String email = userInfo.getKakao_account().getEmail();
+
+        OAuthSignInResponse oAuthSignInResponse = OAuthSignInResponse.builder()
+                .id(id)
+                .nickname(nickname)
+                .email(email)
+                .accessToken(token.getAccessToken())
+                .refreshToken(token.getRefreshToken())
+                .build();
+
+        return oAuthSignInResponse;
+
     }
 }
