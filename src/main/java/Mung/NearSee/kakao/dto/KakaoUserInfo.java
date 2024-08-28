@@ -2,25 +2,28 @@ package Mung.NearSee.kakao.dto;
 
 
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
+
 @Getter
 public class KakaoUserInfo {
-    private String id;
-    private String connectedAt;
-    private KakaoAccount kakaoAccount;
+    private Long id;
+    private String connected_at;
+    private KakaoAccount kakao_account;
 
 
+    @Getter
     public static class KakaoAccount {
 
-        private String email;
         private Profile profile;
+        private Boolean has_email;
+        private String email;
 
+        @Getter
         public static class Profile {
 
             private String nickname;
-            private String profileImageUrl;
+            private String thumbnail_image_url;
+            private String profile_image_url;
 
         }
     }

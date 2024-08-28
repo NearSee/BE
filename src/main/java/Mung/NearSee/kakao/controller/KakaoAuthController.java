@@ -34,7 +34,7 @@ public class KakaoAuthController {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "로그인 완료");
             response.put("accessToken", token.getAccessToken());
-            response.put("userInfo", userInfo.getKakaoAccount());
+            response.put("userInfo", userInfo);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {

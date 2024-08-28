@@ -65,7 +65,7 @@ public class KakaoAuthService {
                 .build()
                 .get()
                 .uri(kakaoOAuth2Properties.getUserInfoUri())
-                .headers(h -> h.setBearerAuth(accessToken))
+                .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(KakaoUserInfo.class)
                 .block();
