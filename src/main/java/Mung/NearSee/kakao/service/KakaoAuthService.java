@@ -6,6 +6,9 @@ import Mung.NearSee.config.KakaoOAuth2Properties;
 import Mung.NearSee.kakao.dto.KakaoUserInfo;
 import Mung.NearSee.kakao.dto.OAuthSignInResponse;
 import Mung.NearSee.kakao.token.OAuthToken;
+import Mung.NearSee.user.entity.User;
+import Mung.NearSee.user.repository.UserRepository;
+import Mung.NearSee.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,9 +25,12 @@ public class KakaoAuthService {
     private final KakaoOAuth2Properties kakaoOAuth2Properties;
     private final WebClient webClient;
 
-    public KakaoAuthService(KakaoOAuth2Properties kakaoOAuth2Properties, WebClient.Builder webClientBuilder) {
+    private final UserService userService;
+
+    public KakaoAuthService(KakaoOAuth2Properties kakaoOAuth2Properties, WebClient.Builder webClientBuilder, UserService userService) {
         this.kakaoOAuth2Properties = kakaoOAuth2Properties;
         this.webClient = webClientBuilder.build();
+        this.userService = userService;
     }
 
     // 인가 코드를 받아 Kakao 인증 URL을 생성 <- 프론트엔드
@@ -74,23 +80,26 @@ public class KakaoAuthService {
         return userInfo;
     }
 
+    //로그인 -> 시용자 정보 DB저장
     public OAuthSignInResponse login(String code) {
         OAuthToken token = getToken(code);
         KakaoUserInfo userInfo = getUserInfo(token.getAccessToken());
 
-        Long id = userInfo.getId();
-        String nickname = userInfo.getKakao_account().getProfile().getNickname();
-        String email = userInfo.getKakao_account().getEmail();
+        User user = userService.saveOrUpdateUser(userInfo);
+
+//        Long id = userInfo.getId();
+//        String nickname = userInfo.getKakao_account().getProfile().getNickname();
+//        String email = userInfo.getKakao_account().getEmail();
 
         OAuthSignInResponse oAuthSignInResponse = OAuthSignInResponse.builder()
-                .id(id)
-                .nickname(nickname)
-                .email(email)
+                .id(user.getUserId())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .image(user.getProfileImage())
                 .accessToken(token.getAccessToken())
                 .refreshToken(token.getRefreshToken())
                 .build();
 
         return oAuthSignInResponse;
-
     }
 }
