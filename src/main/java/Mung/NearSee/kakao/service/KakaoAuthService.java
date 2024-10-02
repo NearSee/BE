@@ -7,7 +7,6 @@ import Mung.NearSee.kakao.dto.KakaoUserInfo;
 import Mung.NearSee.kakao.dto.OAuthSignInResponse;
 import Mung.NearSee.kakao.token.OAuthToken;
 import Mung.NearSee.user.entity.User;
-import Mung.NearSee.user.repository.UserRepository;
 import Mung.NearSee.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +32,6 @@ public class KakaoAuthService {
         this.userService = userService;
     }
 
-    // 인가 코드를 받아 Kakao 인증 URL을 생성 <- 프론트엔드
-    public String getKakaoAuthorizationUrl() {
-        String url  = kakaoOAuth2Properties.getAuthorizationUri()
-                + "?response_type=code&client_id=" + kakaoOAuth2Properties.getClientId()
-                + "&redirect_uri=" + kakaoOAuth2Properties.getRedirectUri();
-
-        logger.info("Kakao authorization URL: {}", url);
-        return url;
-    }
 
     // 인가 코드로 사용해 액세스 토큰을 요청
     public OAuthToken getToken(String code) {
@@ -80,17 +70,14 @@ public class KakaoAuthService {
         return userInfo;
     }
 
-    //로그인 -> 시용자 정보 DB저장
-    public OAuthSignInResponse login(String code) {
-        OAuthToken token = getToken(code);
-        KakaoUserInfo userInfo = getUserInfo(token.getAccessToken());
 
+    //로그인 -> 시용자 정보 DB저장
+    // 사용자 정보를 DB에 저장하고 OAuthSignInResponse 생성
+    public OAuthSignInResponse login(KakaoUserInfo userInfo, OAuthToken token) {
+        // 사용자 정보를 DB에 저장 또는 업데이트
         User user = userService.saveOrUpdateUser(userInfo);
 
-//        Long id = userInfo.getId();
-//        String nickname = userInfo.getKakao_account().getProfile().getNickname();
-//        String email = userInfo.getKakao_account().getEmail();
-
+        // OAuthSignInResponse 객체 생성
         OAuthSignInResponse oAuthSignInResponse = OAuthSignInResponse.builder()
                 .id(user.getUserId())
                 .nickname(user.getNickname())
