@@ -18,7 +18,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/kakao/login").permitAll()  // 이 경로를 인증 없이 접근 가능하도록 설정
+                        .requestMatchers("/kakao/callback").permitAll()  // 이 경로를 인증 없이 접근 가능하도록 설정
                         .anyRequest().authenticated()
                 )
                 .oauth2Login();  // OAuth2 로그인 설정

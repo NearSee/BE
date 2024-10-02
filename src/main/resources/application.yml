@@ -2,7 +2,7 @@ server:
   port: 8000
 logging:
   level:
-    com.serengeti.hyu.backend: DEBUG
+    root: INFO
 spring:
   devtools:
     add-properties: false
