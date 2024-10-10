@@ -8,6 +8,7 @@ import java.util.Date;
 @Getter
 public class OAuthSignInResponse {
     private Long id;
+    private Long kakaoId;
     private String nickname;
     private String email;
     private String image;
@@ -16,8 +17,9 @@ public class OAuthSignInResponse {
 
 
     @Builder
-    public OAuthSignInResponse(Long id, String nickname, String email, String image, String accessToken, String refreshToken) {
+    public OAuthSignInResponse(Long id, Long kakaoId, String nickname, String email, String image, String accessToken, String refreshToken) {
         this.id = id;
+        this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.email = email;
         this.image = image;

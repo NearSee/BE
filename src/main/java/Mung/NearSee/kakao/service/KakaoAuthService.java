@@ -80,6 +80,7 @@ public class KakaoAuthService {
         // OAuthSignInResponse 객체 생성
         OAuthSignInResponse oAuthSignInResponse = OAuthSignInResponse.builder()
                 .id(user.getUserId())
+                .kakaoId(user.getKakaoId())
                 .nickname(user.getNickname())
                 .email(user.getEmail())
                 .image(user.getProfileImage())
