@@ -24,27 +24,10 @@ public class SecurityConfig {
                         .requestMatchers("/kakao/callback").permitAll()  // 이 경로를 인증 없이 접근 가능하도록 설정
                         .anyRequest().authenticated()
                 )
-                .oauth2Login()
-                .and()
-                .cors().configurationSource(corsConfigurationSource());;// OAuth2 로그인 설정
+                .csrf().disable()
+                .cors();
 
         return http.build();
-
     }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
 }
 
