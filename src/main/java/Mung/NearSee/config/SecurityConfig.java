@@ -7,6 +7,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 @Configuration
@@ -21,23 +24,27 @@ public class SecurityConfig {
                         .requestMatchers("/kakao/login").permitAll()  // 이 경로를 인증 없이 접근 가능하도록 설정
                         .anyRequest().authenticated()
                 )
-                .oauth2Login();  // OAuth2 로그인 설정
+                .oauth2Login()
+                .and()
+                .cors().configurationSource(corsConfigurationSource());;// OAuth2 로그인 설정
 
         return http.build();
 
     }
 
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**")
-//                        .allowedOrigins("http://localhost:8000") // 프론트엔드 도메인
-//                        .allowedMethods("*")
-//                        .allowedHeaders("*");
-//            }
-//        };
-//    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 }
 
