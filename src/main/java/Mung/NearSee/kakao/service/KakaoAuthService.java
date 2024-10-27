@@ -44,16 +44,21 @@ public class KakaoAuthService {
 
         logger.info("토큰을 요청하는 중...");
         // POST 방식으로 key-value 데이터 요청
-        OAuthToken token = webClient.post()
-                .uri(kakaoOAuth2Properties.getTokenUri())
-                .body(BodyInserters.fromFormData(params))
-                .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
-                .retrieve()
-                .bodyToMono(OAuthToken.class).block();
+        try {
+            // POST 방식으로 key-value 데이터 요청
+            OAuthToken token = webClient.post()
+                    .uri(kakaoOAuth2Properties.getTokenUri())
+                    .body(BodyInserters.fromFormData(params))
+                    .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
+                    .retrieve()
+                    .bodyToMono(OAuthToken.class).block();
 
-        logger.info("토큰 발급 완료! {}", token.getAccessToken());
-
-        return token;
+            logger.info("토큰 발급 완료! {}", token.getAccessToken());
+            return token;
+        } catch (Exception e) {
+            logger.error("토큰 요청 중 오류 발생: {}", e.getMessage());
+            throw e; // 혹은 null을 반환하는 등의 처리를 해줄 수 있습니다.
+        }
     }
 
     //액세스 토큰으로 사용자 정보 가져오기
